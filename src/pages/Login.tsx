@@ -28,7 +28,12 @@ const Login = () => {
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
 
-      navigate("/dashboard"); // Redirect to your application dashboard
+      if (data.user.roles.includes("ADMIN")) {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
+      
     } catch (err: any) {
       setError(
         err.response?.data?.message || "Invalid credentials. Please try again.",
