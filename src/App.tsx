@@ -5,16 +5,20 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 
 import UserDashboard from "./pages/user/UserDashboard";
+import MyOrders from "./pages/user/MyOrders";
+import Shop from "./pages/user/Shop";
+import Profile from "./pages/user/Profile";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Items from "./pages/admin/Items";
-import Orders from "./pages/admin/Orders"
+import Orders from "./pages/admin/Orders";
 import Customers from "./pages/admin/Customers";
 import Reports from "./pages/admin/Reports";
 import Emails from "./pages/admin/Emails";
 
-import ProtectedRoute from "./components/ProtectedRout";
+import ProtectedRoute from "./components/common/ProtectedRout";
 import AdminLayout from "./layouts/AdminLayout";
+import UserLayout from "./layouts/UserLayout";
 
 import { isLoggedIn } from "./service/TokenService";
 
@@ -38,15 +42,25 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
-        {/* User Dashboard */}
+        {/* ===========================
+            User Section
+           =========================== */}
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute allowedRoles={["USER", "ADMIN"]}>
-              <UserDashboard />
+              <UserLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<UserDashboard />} />
+
+          {/* Future pages */}
+          { <Route path="shop" element={<Shop />} />}
+          { <Route path="orders" element={<MyOrders />} /> }
+          {/* <Route path="wishlist" element={<Wishlist />} /> */}
+          { <Route path="profile" element={<Profile />} /> }
+        </Route>
 
         {/* ===========================
             Admin Section
@@ -67,9 +81,9 @@ export default function App() {
 
           {/* Future pages */}
           {<Route path="orders" element={<Orders />} />}
-          { <Route path="customers" element={<Customers />} /> }
-          { <Route path="reports" element={<Reports />} /> }
-          { <Route path="emails" element={<Emails />} /> }
+          {<Route path="customers" element={<Customers />} />}
+          {<Route path="reports" element={<Reports />} />}
+          {<Route path="emails" element={<Emails />} />}
           {/* <Route path="employees" element={<Employees />} /> */}
           {/* <Route path="settings" element={<Settings />} /> */}
         </Route>
