@@ -1,4 +1,4 @@
-const Items = () => {
+const Orders = () => {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold">Orders</h1>
@@ -7,4 +7,4 @@ const Items = () => {
   );
 };
 
-export default Items;
+export default Orders;

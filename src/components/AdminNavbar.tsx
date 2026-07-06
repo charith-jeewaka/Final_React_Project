@@ -8,9 +8,9 @@ const AdminNavbar = () => {
     { name: "Orders", path: "/admin/orders" },
     { name: "Customers", path: "/admin/customers" },
     { name: "Reports", path: "/admin/reports" },
-    { name: "Emails", path: "/admin/emails" },
-    { name: "Employees", path: "/admin/employees" },
-    { name: "Settings", path: "/admin/settings" },
+    { name: "Emails", path: "/admin/emails" }
+    // { name: "Employees", path: "/admin/employees" },
+    // { name: "Settings", path: "/admin/settings" },
   ];
 
   return (

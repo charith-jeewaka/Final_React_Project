@@ -9,6 +9,9 @@ import UserDashboard from "./pages/user/UserDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Items from "./pages/admin/Items";
 import Orders from "./pages/admin/Orders"
+import Customers from "./pages/admin/Customers";
+import Reports from "./pages/admin/Reports";
+import Emails from "./pages/admin/Emails";
 
 import ProtectedRoute from "./components/ProtectedRout";
 import AdminLayout from "./layouts/AdminLayout";
@@ -64,9 +67,9 @@ export default function App() {
 
           {/* Future pages */}
           {<Route path="orders" element={<Orders />} />}
-          {/* <Route path="customers" element={<Customers />} /> */}
-          {/* <Route path="reports" element={<Reports />} /> */}
-          {/* <Route path="emails" element={<Emails />} /> */}
+          { <Route path="customers" element={<Customers />} /> }
+          { <Route path="reports" element={<Reports />} /> }
+          { <Route path="emails" element={<Emails />} /> }
           {/* <Route path="employees" element={<Employees />} /> */}
           {/* <Route path="settings" element={<Settings />} /> */}
         </Route>
