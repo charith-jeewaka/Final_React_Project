@@ -1,33 +1,53 @@
 // src/service/Api.ts
-import axios, { AxiosError } from "axios";
-import { refreshTokenCall } from "./Auth";
 
-const api = axios.create({ baseURL: "http://localhost:5000/api/v1" });
+import axios, { AxiosError } from "axios";
+import type { InternalAxiosRequestConfig } from "axios";
+import { logout, refreshTokenCall } from "./Auth";
+import {getAccessToken,getRefreshToken,setAccessToken,} from "./TokenService";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
 
 const PUBLIC_ENDPOINTS = ["/auth/login", "/auth/register", "/auth/refresh"];
 
-// For add token to all request
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
+// Extend Axios request config to support retry flag
+interface RetryRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
-  const isPublic = PUBLIC_ENDPOINTS.some((url) => config.url?.includes(url));
+// Request Interceptor
+// Automatically attach JWT
+
+api.interceptors.request.use((config) => {
+  const token = getAccessToken();
+
+  const isPublic = PUBLIC_ENDPOINTS.some((endpoint) =>
+    config.url?.includes(endpoint),
+  );
 
   if (!isPublic && token) {
     config.headers.Authorization = `Bearer ${token}`;
-    // config.headers.Authorization = "Bearer" + token
   }
+
   return config;
 });
 
-api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error: AxiosError) => {
-    const originalRequest: any = error.config;
+// Response Interceptor
+// Refresh expired access token automatically
 
-    const isPublic = PUBLIC_ENDPOINTS.some((url) =>
-      originalRequest.url?.includes(url),
+api.interceptors.response.use(
+  (response) => response,
+
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryRequestConfig;
+
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
+    const isPublic = PUBLIC_ENDPOINTS.some((endpoint) =>
+      originalRequest.url?.includes(endpoint),
     );
 
     if (
@@ -36,25 +56,32 @@ api.interceptors.response.use(
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
-      try {
-        const refreshToken = localStorage.getItem("refreshToken") as string;
-        if (!refreshToken) {
-          throw new Error("No refresh token available");
-        }
-        const refreshResponse = await refreshTokenCall(refreshToken);
-        const newAccessToken = refreshResponse.data.accessToken;
 
-        localStorage.setItem("accessToken", newAccessToken);
+      try {
+        const refreshToken = getRefreshToken();
+
+        if (!refreshToken) {
+          throw new Error("No refresh token found.");
+        }
+
+        const response = await refreshTokenCall(refreshToken);
+
+        const newAccessToken = response.accessToken;
+
+        setAccessToken(newAccessToken);
+
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return axios(originalRequest);
+
+        return api(originalRequest);
       } catch (err) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/login";
-        console.error(err);
-        return Promise.reject(error);
+        console.error("Token refresh failed:", err);
+
+        logout();
+
+        return Promise.reject(err);
       }
     }
+
     return Promise.reject(error);
   },
 );
