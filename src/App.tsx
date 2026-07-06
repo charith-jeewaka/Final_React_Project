@@ -25,7 +25,6 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Dashboards */}
         <Route
           path="/dashboard"
           element={
@@ -35,6 +34,8 @@ export default function App() {
           }
         />
 
+
+        {/*Admin Dashboards */}
         <Route
           path="/admin"
           element={
@@ -43,6 +44,8 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+        
 
         <Route path="*" element={<Navigate to="/register" replace />} />
       </Routes>
