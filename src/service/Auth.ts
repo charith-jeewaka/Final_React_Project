@@ -1,5 +1,6 @@
 // src/service/Auth.ts
 import api from "./Api";
+import { clearSession } from "./TokenService";
 
 export const register = async (name: string,email: string,password: string,
 ) => {
@@ -13,8 +14,7 @@ export const login = async (email: string, password: string) => {
 };
 
 export const logout = () => {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
+  clearSession();
 };
 
 export const getMyDetails = async () => {

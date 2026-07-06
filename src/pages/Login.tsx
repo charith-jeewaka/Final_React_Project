@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../service/Auth";
+import { setAccessToken , setRefreshToken , setUser } from "../service/TokenService";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -25,8 +26,9 @@ const Login = () => {
       const data = await login(email, password);
 
       // Store tokens in localStorage matching your Api.tsx file interceptors
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
+      setAccessToken(data.accessToken);
+      setRefreshToken(data.refreshToken);
+      setUser(data.user);
 
       if (data.user.roles.includes("ADMIN")) {
         navigate("/admin");
