@@ -6,7 +6,7 @@ import Login from "./pages/Login";
 
 import UserDashboard from "./pages/user/UserDashboard";
 import MyOrders from "./pages/user/MyOrders";
-import Shop from "./pages/user/Shop";
+import Shop from "./pages/user/UserCart";
 import Profile from "./pages/user/Profile";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -22,6 +22,7 @@ import UserLayout from "./layouts/UserLayout";
 
 import { isLoggedIn } from "./service/TokenService";
 import EditProduct from "./pages/admin/EditProduct";
+import UserCart from "./pages/user/UserCart";
 
 export default function App() {
   return (
@@ -57,7 +58,7 @@ export default function App() {
           <Route index element={<UserDashboard />} />
 
           {/* Future pages */}
-          {<Route path="shop" element={<Shop />} />}
+          {<Route path="userCart" element={<UserCart />} />}
           {<Route path="orders" element={<MyOrders />} />}
           {/* <Route path="wishlist" element={<Wishlist />} /> */}
           {<Route path="profile" element={<Profile />} />}

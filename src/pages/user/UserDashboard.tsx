@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { getAllItems } from "../../service/ItemService";
 import type { Item } from "../../types/Item";
 import UserProductCard from "../../components/user/UserProductCard";
+import type { CartItem } from "../../types/Cart";
+import Swal from "sweetalert2";
 
 const UserDashboard = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -12,10 +14,20 @@ const UserDashboard = () => {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+
   useEffect(() => {
     loadItems();
   }, []);
 
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart));
+    }
+  }, []);
   const loadItems = async () => {
     try {
       const response = await getAllItems();
@@ -49,7 +61,43 @@ const UserDashboard = () => {
   }, [search, categoryFilter, items]);
 
   const handleAddToCart = (item: Item) => {
-    console.log("Add to cart:", item);
+    const existingItem = cartItems.find(
+      (cartItem) => cartItem._id === item._id,
+    );
+
+    let updatedCart;
+
+    if (existingItem) {
+      updatedCart = cartItems.map((cartItem) =>
+        cartItem._id === item._id
+          ? {
+              ...cartItem,
+              quantity: cartItem.quantity + 1,
+            }
+          : cartItem,
+      );
+    } else {
+      updatedCart = [
+        ...cartItems,
+        {
+          ...item,
+          quantity: 1,
+        },
+      ];
+    }
+
+    setCartItems(updatedCart);
+
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+    Swal.fire({
+          icon: "success",
+          title: "Added To Cart !",
+          text: item.name,
+          timer: 1800,
+          showConfirmButton: false,
+        });
+
   };
 
   if (loading) {
@@ -66,12 +114,12 @@ const UserDashboard = () => {
       <div className="sticky top-0 z-10 rounded-2xl bg-white p-2 shadow">
         <div className="grid gap-4 md:grid-cols-2 ">
           <input
-            type="text"
-            placeholder="Search products..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="rounded-xl border p-3 outline-none focus:border-emerald-500"
-          />
+        type="text"
+        placeholder="Search products..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full rounded-xl border p-3 pl-10 outline-none focus:border-emerald-500"
+      />
 
           <select
             value={categoryFilter}

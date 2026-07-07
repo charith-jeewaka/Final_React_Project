@@ -6,7 +6,7 @@ import LogoutButton from "../common/LogoutButton";
 const UserNavbar = () => {
   const menuItems = [
     { name: "Home", path: "/dashboard" },
-    { name: "Shop", path: "/dashboard/shop" },
+    { name: "Cart", path: "/dashboard/userCart" },
     { name: "My Orders", path: "/dashboard/orders" },
     // { name: "Wishlist", path: "/dashboard/wishlist" },
     { name: "Profile", path: "/dashboard/profile" },
