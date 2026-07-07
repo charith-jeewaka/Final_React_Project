@@ -3,6 +3,8 @@ import type { ChangeEvent, FormEvent } from "react";
 import { createItem } from "../../service/ItemService";
 import axios from "axios";
 import ProductForm from "../../components/admin/ProductForm";
+import Swal from "sweetalert2";
+
 
 const AddProducts = () => {
   const [image, setImage] = useState<File | null>(null);
@@ -60,7 +62,11 @@ if (loading) return;
       !formData.stock ||
       !image
     ) {
-      alert("Please fill all required fields.");
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Information",
+        text: "Please fill all required fields.",
+      });
       return;
     }
 
@@ -82,14 +88,24 @@ if (loading) return;
 
     const response = await createItem(form);
 
-    alert(response.message);
+    Swal.fire({
+      icon: "success",
+      title: "Product Added!",
+      text: response.message,
+      timer: 1800,
+      showConfirmButton: false,
+    });
 
     resetForm();
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       alert(error.response?.data?.message ?? "Failed to create product.");
     } else {
-      alert("An unexpected error occurred.");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "An unexpected error occured.",
+      });
     }
   }
 

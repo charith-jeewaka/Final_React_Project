@@ -3,6 +3,7 @@ import { getAllItems, deleteItem } from "../../service/ItemService";
 import type { Item } from "../../types/Item";
 import AdminProductCard from "../../components/admin/AdminProductCard";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Inventory = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -66,23 +67,40 @@ const Inventory = () => {
   };
 
   const handleDelete = async (id: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this product?",
-    );
+    const result = await Swal.fire({
+      title: "Delete Product?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+    });
 
-    if (!confirmed) return;
+    if (!result.isConfirmed) return;
 
     try {
       const response = await deleteItem(id);
 
-      alert(response.message);
+      Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: response.message,
+        timer: 1800,
+        showConfirmButton: false,
+      });
 
       // Remove from local state
       setItems((prev) => prev.filter((item) => item._id !== id));
       setFilteredItems((prev) => prev.filter((item) => item._id !== id));
     } catch (error) {
       console.error(error);
-      alert("Failed to delete product.");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to delete product.",
+      });
     }
   };
 
