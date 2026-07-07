@@ -12,7 +12,7 @@ import Profile from "./pages/user/Profile";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AddProducts from "./pages/admin/AddProducts";
 import Orders from "./pages/admin/Orders";
-import Customers from "./pages/admin/Customers";
+import Inventory from "./pages/admin/Inventory";
 import Reports from "./pages/admin/Reports";
 import Emails from "./pages/admin/Emails";
 
@@ -81,7 +81,7 @@ export default function App() {
 
           {/* Future pages */}
           {<Route path="orders" element={<Orders />} />}
-          {<Route path="customers" element={<Customers />} />}
+          {<Route path="inventory" element={<Inventory />} />}
           {<Route path="reports" element={<Reports />} />}
           {<Route path="emails" element={<Emails />} />}
           {/* <Route path="employees" element={<Employees />} /> */}
