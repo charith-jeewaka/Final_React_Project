@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import type { CartItem } from "../../types/Cart";
 import { placeOrder } from "../../service/OrderService";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 
 
 const Checkout = () => {
+ const navigate = useNavigate();
+
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const [customerName, setCustomerName] = useState("");
@@ -30,41 +33,6 @@ const Checkout = () => {
   const total = subtotal + deliveryFee;
 
   const handlePlaceOrder = async () => {
-
-    if (
-      !customerName.trim() ||
-      !phone.trim() ||
-      !email.trim() ||
-      !address.trim()
-    ) {
-    Swal.fire({
-    icon: "warning",
-    title: "Missing Information",
-    text: "Please Fill All The Fields."
-    });  return;
-    }
-
-    if (phone.length < 10) {
-      alert("Please enter a valid phone number.");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(email)) {
-      alert("Please enter a valid email.");
-      return;
-    }
-
-    if (cartItems.length === 0) {
-      Swal.fire({
-              icon: "warning",
-              title: "Missing Information",
-              text: "Your Cart Is Empty.",
-            });
-      return;
-    }
-
     try {
       const order = {
         customerName,
@@ -79,19 +47,34 @@ const Checkout = () => {
       };
 
       const response = await placeOrder(order);
-        Swal.fire({
-              icon: "success",
-              title: "Product Added!",
-              text: response.message,
-              timer: 1800,
-              showConfirmButton: false,
-            });
 
-        localStorage.removeItem("cart");
-        setCartItems([]);
-    } 
-    catch (error: any) {
-      alert(error.response?.data?.message);
+      await Swal.fire({
+        icon: "success",
+        title: "Order Placed!",
+        text: response.message,
+        timer: 1800,
+        showConfirmButton: false,
+      });
+
+      // Clear cart
+      localStorage.removeItem("cart");
+      setCartItems([]);
+
+      // Clear customer form
+      setCustomerName("");
+      setPhone("");
+      setEmail("");
+      setAddress("");
+
+
+      // Redirect
+      navigate("/dashboard/myOrders");
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Order Failed",
+        text: error.response?.data?.message || "Something went wrong.",
+      });
     }
   };
 

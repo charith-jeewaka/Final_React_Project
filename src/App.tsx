@@ -62,8 +62,7 @@ export default function App() {
           {<Route path="checkout" element={<Checkout />} />}
 
           {<Route path="userCart" element={<UserCart />} />}
-          {<Route path="orders" element={<MyOrders />} />}
-          {/* <Route path="wishlist" element={<Wishlist />} /> */}
+          {<Route path="myOrders" element={<MyOrders />} />}
           {<Route path="profile" element={<Profile />} />}
         </Route>
 
