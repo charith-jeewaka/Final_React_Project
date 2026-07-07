@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { CartItem } from "../../types/Cart";
 import { Trash2, Plus, Minus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const UserCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -56,6 +57,8 @@ const UserCart = () => {
     0,
   );
 
+  const navigate = useNavigate();
+
   if (cartItems.length === 0) {
     return (
       <div className="flex h-full items-center justify-center">
@@ -68,12 +71,13 @@ const UserCart = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Shopping Cart</h1>
+      <h1 className="text-4xl font-bold text-center">Your shopping Items Here !</h1>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Cart Items */}
 
-        <div className="space-y-4 lg:col-span-2">
+        <div className="space-y-3 lg:col-span-2 max-h-[calc(100vh-180px)] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-zinc-300">
+          {" "}
           {cartItems.map((item) => (
             <div
               key={item._id}
@@ -86,7 +90,7 @@ const UserCart = () => {
               />
 
               <div className="flex-1">
-                <h2 className="text-lg font-bold">{item.name}</h2>
+                <h2 className="text-lg font-bold text-xl">{item.name}</h2>
 
                 <p className="text-zinc-500">Rs. {item.price}</p>
 
@@ -95,16 +99,16 @@ const UserCart = () => {
                     onClick={() => decreaseQuantity(item._id)}
                     className="rounded-lg border p-2"
                   >
-                    <Minus size={16} />
+                    <Minus size={10} />
                   </button>
 
-                  <span className="font-semibold">{item.quantity}</span>
+                  <span className="font-semibold text-xl">{item.quantity}</span>
 
                   <button
                     onClick={() => increaseQuantity(item._id)}
                     className="rounded-lg border p-2"
                   >
-                    <Plus size={16} />
+                    <Plus size={10} />
                   </button>
                 </div>
               </div>
@@ -121,10 +125,8 @@ const UserCart = () => {
 
         {/* Summary */}
 
-        {/* Summary */}
-
-        <div className="h-fit rounded-2xl bg-white p-6 shadow">
-          <h2 className="text-xl font-bold">Order Summary</h2>
+        <div className=" rounded-2xl bg-white p-6 shadow max-h-[calc(100vh-180px)]">
+          <h2 className="text-3xl font-bold text-center">ORDER SUMMERY</h2>
 
           <div className="mt-5 space-y-4">
             {/* Items Count */}
@@ -150,6 +152,13 @@ const UserCart = () => {
               <span className="font-semibold text-green-600">Rs. 0</span>
             </div>
 
+            {/* Discount */}
+            <div className="flex justify-between text-zinc-600">
+              <span>Vouchers</span>
+
+              <span className="font-semibold text-green-600">Rs. 0</span>
+            </div>
+
             {/* Delivery */}
             <div className="flex justify-between text-zinc-600">
               <span>Delivery Fee</span>
@@ -170,7 +179,10 @@ const UserCart = () => {
             </div>
           </div>
 
-          <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 py-3 font-semibold text-white transition hover:bg-emerald-600">
+          <button
+            onClick={() => navigate("/dashboard/checkout")}
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 py-3 font-semibold text-white transition hover:bg-emerald-600"
+          >
             Checkout
           </button>
         </div>

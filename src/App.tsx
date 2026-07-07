@@ -23,6 +23,7 @@ import UserLayout from "./layouts/UserLayout";
 import { isLoggedIn } from "./service/TokenService";
 import EditProduct from "./pages/admin/EditProduct";
 import UserCart from "./pages/user/UserCart";
+import Checkout from "./pages/user/Checkout";
 
 export default function App() {
   return (
@@ -58,6 +59,8 @@ export default function App() {
           <Route index element={<UserDashboard />} />
 
           {/* Future pages */}
+          {<Route path="checkout" element={<Checkout />} />}
+
           {<Route path="userCart" element={<UserCart />} />}
           {<Route path="orders" element={<MyOrders />} />}
           {/* <Route path="wishlist" element={<Wishlist />} /> */}
