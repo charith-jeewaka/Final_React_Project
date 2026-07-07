@@ -6,7 +6,6 @@ import Login from "./pages/Login";
 
 import UserDashboard from "./pages/user/UserDashboard";
 import MyOrders from "./pages/user/MyOrders";
-import Shop from "./pages/user/UserCart";
 import Profile from "./pages/user/Profile";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
