@@ -62,8 +62,9 @@ const UserDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl bg-white p-5 shadow">
-        <div className="grid gap-4 md:grid-cols-2">
+      
+      <div className="sticky top-0 z-10 rounded-2xl bg-white p-2 shadow">
+        <div className="grid gap-4 md:grid-cols-2 ">
           <input
             type="text"
             placeholder="Search products..."
@@ -88,7 +89,7 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {filteredItems.map((item) => (
           <UserProductCard
             key={item._id}
