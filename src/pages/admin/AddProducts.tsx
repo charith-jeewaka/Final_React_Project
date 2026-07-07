@@ -1,9 +1,12 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import { createItem } from "../../service/ItemService";
+import axios from "axios";
 
 const AddProducts = () => {
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -37,18 +40,39 @@ const AddProducts = () => {
   };
 
   const handleImage = (e: ChangeEvent<HTMLInputElement>) => {
+if (loading) return;
+
     if (!e.target.files?.length) return;
 
     const file = e.target.files[0];
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select a valid image.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image must be smaller than 5MB.");
+      return;
+    }
 
     setImage(file);
     setPreview(URL.createObjectURL(file));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    alert("clicked")
-
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (
+      !formData.name.trim() ||
+      !formData.category.trim() ||
+      !formData.price ||
+      !formData.stock ||
+      !image
+    ) {
+      alert("Please fill all required fields.");
+      return;
+    }
 
     const form = new FormData();
 
@@ -63,8 +87,23 @@ const AddProducts = () => {
       form.append("image", image);
     }
 
-    console.log(form);
-  };
+  try {
+    setLoading(true);
+
+    const response = await createItem(form);
+
+    alert(response.message);
+
+    resetForm();
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      alert(error.response?.data?.message ?? "Failed to create product.");
+    } else {
+      alert("An unexpected error occurred.");
+    }
+  }
+
+};
 
   const resetForm = () => {
     setImage(null);
@@ -189,7 +228,6 @@ const AddProducts = () => {
             </div>
           </div>
 
-
           {/* RIGHT */}
 
           <div className="flex flex-col gap-6">
@@ -235,6 +273,7 @@ const AddProducts = () => {
                 <button
                   type="button"
                   onClick={resetForm}
+                  disabled={loading}
                   className="flex-1 rounded-xl border border-zinc-300 py-3 font-semibold transition hover:bg-zinc-100"
                 >
                   Reset
@@ -242,15 +281,15 @@ const AddProducts = () => {
 
                 <button
                   type="submit"
+                  disabled={loading}
                   className="flex-1 rounded-xl bg-emerald-500 py-3 font-semibold text-white shadow-md transition hover:bg-emerald-600"
                 >
-                  Save Product
+                  {loading ? "Saving..." : "Save Product"}
                 </button>
               </div>
             </div>
           </div>
         </div>
-
       </form>
     </div>
   );
