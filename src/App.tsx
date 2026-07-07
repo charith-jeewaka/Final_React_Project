@@ -21,6 +21,7 @@ import AdminLayout from "./layouts/AdminLayout";
 import UserLayout from "./layouts/UserLayout";
 
 import { isLoggedIn } from "./service/TokenService";
+import EditProduct from "./pages/admin/EditProduct";
 
 export default function App() {
   return (
@@ -56,10 +57,10 @@ export default function App() {
           <Route index element={<UserDashboard />} />
 
           {/* Future pages */}
-          { <Route path="shop" element={<Shop />} />}
-          { <Route path="orders" element={<MyOrders />} /> }
+          {<Route path="shop" element={<Shop />} />}
+          {<Route path="orders" element={<MyOrders />} />}
           {/* <Route path="wishlist" element={<Wishlist />} /> */}
-          { <Route path="profile" element={<Profile />} /> }
+          {<Route path="profile" element={<Profile />} />}
         </Route>
 
         {/* ===========================
@@ -82,6 +83,7 @@ export default function App() {
           {/* Future pages */}
           {<Route path="orders" element={<Orders />} />}
           {<Route path="inventory" element={<Inventory />} />}
+          <Route path="inventory/edit/:id" element={<EditProduct />} />
           {<Route path="reports" element={<Reports />} />}
           {<Route path="emails" element={<Emails />} />}
           {/* <Route path="employees" element={<Employees />} /> */}

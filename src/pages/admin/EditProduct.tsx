@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import type { ChangeEvent, FormEvent } from "react";
-import { createItem } from "../../service/ItemService";
 import axios from "axios";
-import ProductForm from "../../components/admin/ProductForm";
 
-const AddProducts = () => {
+import ProductForm from "../../components/admin/ProductForm";
+import { getItemById, updateItem } from "../../service/ItemService";
+
+const EditProduct = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -17,6 +24,36 @@ const AddProducts = () => {
     stock: "",
     active: true,
   });
+
+  useEffect(() => {
+    loadItem();
+  }, []);
+
+  const loadItem = async () => {
+    try {
+      if (!id) return;
+
+      const response = await getItemById(id);
+
+      const item = response.item;
+
+      setFormData({
+        name: item.name,
+        category: item.category,
+        description: item.description ?? "",
+        price: item.price.toString(),
+        stock: item.stock.toString(),
+        active: item.active,
+      });
+
+      setPreview(item.image);
+    } catch (error) {
+      alert("Failed to load product.");
+      console.error(error);
+    } finally {
+      setPageLoading(false);
+    }
+  };
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -30,8 +67,6 @@ const AddProducts = () => {
   };
 
   const handleImage = (e: ChangeEvent<HTMLInputElement>) => {
-if (loading) return;
-
     if (!e.target.files?.length) return;
 
     const file = e.target.files[0];
@@ -42,7 +77,7 @@ if (loading) return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      alert("Image must be smaller than 5MB.");
+      alert("Image must be under 5MB.");
       return;
     }
 
@@ -53,16 +88,7 @@ if (loading) return;
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (
-      !formData.name.trim() ||
-      !formData.category.trim() ||
-      !formData.price ||
-      !formData.stock ||
-      !image
-    ) {
-      alert("Please fill all required fields.");
-      return;
-    }
+    if (!id) return;
 
     const form = new FormData();
 
@@ -77,37 +103,37 @@ if (loading) return;
       form.append("image", image);
     }
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const response = await createItem(form);
+      const response = await updateItem(id, form);
 
-    alert(response.message);
+      alert(response.message);
 
-    resetForm();
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      alert(error.response?.data?.message ?? "Failed to create product.");
-    } else {
-      alert("An unexpected error occurred.");
+      navigate("/admin/inventory");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.message ?? "Update failed.");
+      } else {
+        alert("Something went wrong.");
+      }
+    } finally {
+      setLoading(false);
     }
-  }
-
-};
+  };
 
   const resetForm = () => {
+    loadItem();
     setImage(null);
-    setPreview("");
-
-    setFormData({
-      name: "",
-      category: "",
-      description: "",
-      price: "",
-      stock: "",
-      active: true,
-    });
   };
+
+  if (pageLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <h2 className="text-xl font-semibold">Loading Product...</h2>
+      </div>
+    );
+  }
 
   return (
     <ProductForm
@@ -122,4 +148,4 @@ if (loading) return;
   );
 };
 
-export default AddProducts;
+export default EditProduct;

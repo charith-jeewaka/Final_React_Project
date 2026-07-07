@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { getAllItems } from "../../service/ItemService";
+import { getAllItems, deleteItem } from "../../service/ItemService";
 import type { Item } from "../../types/Item";
 import AdminProductCard from "../../components/admin/AdminProductCard";
+import { useNavigate } from "react-router-dom";
 
 const Inventory = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -58,12 +59,31 @@ const Inventory = () => {
   };
 
 
+  const navigate = useNavigate();
+
   const handleEdit = (item: Item) => {
-    console.log("Edit:", item);
+    navigate(`/admin/inventory/edit/${item._id}`);
   };
 
-  const handleDelete = (id: string) => {
-    console.log("Delete:", id);
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this product?",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const response = await deleteItem(id);
+
+      alert(response.message);
+
+      // Remove from local state
+      setItems((prev) => prev.filter((item) => item._id !== id));
+      setFilteredItems((prev) => prev.filter((item) => item._id !== id));
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete product.");
+    }
   };
 
   if (loading) {
