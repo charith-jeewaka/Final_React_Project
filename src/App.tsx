@@ -10,7 +10,7 @@ import Shop from "./pages/user/Shop";
 import Profile from "./pages/user/Profile";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import Items from "./pages/admin/Items";
+import AddProducts from "./pages/admin/AddProducts";
 import Orders from "./pages/admin/Orders";
 import Customers from "./pages/admin/Customers";
 import Reports from "./pages/admin/Reports";
@@ -77,7 +77,7 @@ export default function App() {
           <Route index element={<AdminDashboard />} />
 
           {/* /admin/items */}
-          <Route path="items" element={<Items />} />
+          <Route path="addProducts" element={<AddProducts />} />
 
           {/* Future pages */}
           {<Route path="orders" element={<Orders />} />}

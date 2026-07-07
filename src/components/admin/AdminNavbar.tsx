@@ -4,33 +4,37 @@ import LogoutButton from "../common/LogoutButton";
 const AdminNavbar = () => {
   const menuItems = [
     { name: "Dashboard", path: "/admin" },
-    { name: "Items", path: "/admin/items" },
+    { name: "Products", path: "/admin/addProducts" },
     { name: "Orders", path: "/admin/orders" },
     { name: "Customers", path: "/admin/customers" },
     { name: "Reports", path: "/admin/reports" },
     { name: "Emails", path: "/admin/emails" },
-    // { name: "Employees", path: "/admin/employees" },
-    // { name: "Settings", path: "/admin/settings" },
   ];
 
   return (
-    <aside className="w-64 h-screen bg-zinc-900 border-r border-zinc-800 text-white flex flex-col">
+    <aside className="w-72 bg-zinc-950 text-white shadow-2xl flex flex-col">
       {/* Logo */}
-      <div className="p-6 border-b border-zinc-800">
-        <h1 className="text-2xl font-bold text-emerald-400">Creative Flora</h1>
+
+      <div className="border-b border-zinc-800 px-8 py-7">
+        <h1 className="text-3xl font-black text-emerald-400">Creative</h1>
+
+        <p className="text-sm text-zinc-400 mt-1">Admin Dashboard</p>
       </div>
 
       {/* Menu */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+
+      <nav className="flex-1 overflow-y-auto p-5 space-y-2">
         {menuItems.map((item) => (
           <NavLink
             key={item.name}
             to={item.path}
+            end={item.path === "/admin"}
             className={({ isActive }) =>
-              `block rounded-lg px-4 py-3 transition-all duration-200 ${
+              `group flex items-center rounded-xl px-5 py-3 transition-all duration-300
+              ${
                 isActive
-                  ? "bg-emerald-500 text-black font-semibold"
-                  : "hover:bg-zinc-800"
+                  ? "bg-emerald-500 text-black font-semibold shadow-lg"
+                  : "text-zinc-300 hover:bg-zinc-900 hover:text-white"
               }`
             }
           >
@@ -40,7 +44,8 @@ const AdminNavbar = () => {
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-zinc-800">
+
+      <div className="border-t border-zinc-800 p-5">
         <LogoutButton />
       </div>
     </aside>
