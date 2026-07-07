@@ -91,7 +91,7 @@ const AddProducts = () => {
           <div className="xl:col-span-2 space-y-8">
             {/* Product Information */}
 
-            <div className="rounded-2xl bg-white p-8 shadow-md">
+            <div className="rounded-2xl bg-white p-5 shadow-md">
               <h2 className="mb-6 text-xl font-semibold">
                 Product Information
               </h2>
@@ -189,13 +189,16 @@ const AddProducts = () => {
             </div>
           </div>
 
+
           {/* RIGHT */}
 
-          <div>
+          <div className="flex flex-col gap-6">
+            {/* Product Image */}
+
             <div className="rounded-2xl bg-white p-8 shadow-md">
               <h2 className="mb-6 text-xl font-semibold">Product Image</h2>
 
-              <label className="flex h-70 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-300 transition hover:border-emerald-500">
+              <label className="flex h-72 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-300 transition hover:border-emerald-500">
                 {preview ? (
                   <img
                     src={preview}
@@ -222,27 +225,32 @@ const AddProducts = () => {
                 />
               </label>
             </div>
+
+            {/* Actions */}
+
+            <div className="rounded-2xl bg-white p-6 shadow-md">
+              <h2 className="mb-5 text-xl font-semibold">Actions</h2>
+
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="flex-1 rounded-xl border border-zinc-300 py-3 font-semibold transition hover:bg-zinc-100"
+                >
+                  Reset
+                </button>
+
+                <button
+                  type="submit"
+                  className="flex-1 rounded-xl bg-emerald-500 py-3 font-semibold text-white shadow-md transition hover:bg-emerald-600"
+                >
+                  Save Product
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Bottom Buttons */}
-
-        <div className="mt-8 flex justify-end gap-4">
-          <button
-            type="button"
-            onClick={resetForm}
-            className="rounded-xl border border-zinc-300 px-8 py-3 font-semibold transition hover:bg-zinc-100"
-          >
-            Reset
-          </button>
-
-          <button
-            type="submit"
-            className="rounded-xl bg-emerald-500 px-8 py-3 font-semibold text-white shadow-lg transition hover:bg-emerald-600"
-          >
-            Save Product
-          </button>
-        </div>
       </form>
     </div>
   );
