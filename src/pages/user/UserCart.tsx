@@ -71,7 +71,9 @@ const UserCart = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-4xl font-bold text-center">Your shopping Items Here !</h1>
+      <h1 className="text-4xl font-bold text-center text-zinc-800">
+        Your shopping Items Here !
+      </h1>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Cart Items */}
@@ -126,7 +128,9 @@ const UserCart = () => {
         {/* Summary */}
 
         <div className=" rounded-2xl bg-white p-6 shadow max-h-[calc(100vh-180px)]">
-          <h2 className="text-3xl font-bold text-center">ORDER SUMMERY</h2>
+          <h2 className="text-3xl font-bold text-center text-zinc-800">
+            ORDER SUMMERY
+          </h2>
 
           <div className="mt-5 space-y-4">
             {/* Items Count */}

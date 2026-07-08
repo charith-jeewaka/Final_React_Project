@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getAllOrders } from "../../service/OrderService";
 import type { Order } from "../../types/Order";
 import Swal from "sweetalert2";
-import { updateOrderStatus } from "../../service/OrderService";
+import { updateOrderStatus ,getOrderById } from "../../service/OrderService";
 
 const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -95,6 +95,85 @@ const handleStatusUpdate = async (order: Order) => {
   }
 };
 
+const handleViewOrder = async (id: string) => {
+  try {
+    const response = await getOrderById(id);
+
+    const order = response.order;
+
+    const itemsHtml = order.items
+      .map(
+        (item: any) => `
+          <div style="
+            display:flex;
+            align-items:center;
+            gap:15px;
+            margin-bottom:15px;
+            border-bottom:1px solid #eee;
+            padding-bottom:10px;
+          ">
+            <img
+              src="${item.image}"
+              style="
+                width:70px;
+                height:70px;
+                object-fit:cover;
+                border-radius:10px;
+              "
+            />
+
+            <div style="text-align:left;">
+              <h4 style="margin:0">${item.name}</h4>
+              <p style="margin:4px 0;">Qty: ${item.quantity}</p>
+              <p style="margin:4px 0;">Rs. ${item.price}</p>
+            </div>
+          </div>
+        `,
+      )
+      .join("");
+
+    Swal.fire({
+      title: `Order #${order._id.slice(-8)}`,
+      width: 800,
+      html: `
+        <div style="text-align:left">
+
+          <h3>Customer Information</h3>
+
+          <p><strong>Name:</strong> ${order.customerName}</p>
+          <p><strong>Phone:</strong> ${order.phone}</p>
+          <p><strong>Email:</strong> ${order.email}</p>
+          <p><strong>Address:</strong> ${order.address}</p>
+
+          <hr>
+
+          <h3>Ordered Items</h3>
+
+          ${itemsHtml}
+
+          <hr>
+
+          <p><strong>Subtotal:</strong> Rs. ${order.subtotal}</p>
+          <p><strong>Delivery Fee:</strong> Rs. ${order.deliveryFee}</p>
+
+          <h2 style="color:#16a34a">
+            Total: Rs. ${order.total}
+          </h2>
+
+          <p><strong>Status:</strong> ${order.status}</p>
+
+        </div>
+      `,
+    });
+  } catch (error: any) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error.response?.data?.message || "Unable to load order.",
+    });
+  }
+};
+
   const filterOrders = () => {
     let result = [...orders];
 
@@ -139,11 +218,9 @@ const handleStatusUpdate = async (order: Order) => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <h1 className="text-3xl font-bold">Orders Management</h1>
-
       {/* Search */}
-      <div className="rounded-2xl bg-white p-5 shadow">
+      <div className="sticky top-0 z-10 rounded-2xl bg-white p-3 shadow">
+        {" "}
         <div className="grid gap-4 md:grid-cols-2">
           <input
             placeholder="Search customer or order ID..."
@@ -168,7 +245,7 @@ const handleStatusUpdate = async (order: Order) => {
 
       {/* Orders */}
 
-      <div className="space-y-4">
+      <div className="space-y-2">
         {filteredOrders.map((order) => (
           <div key={order._id} className="rounded-2xl bg-white p-6 shadow">
             <div className="flex items-center justify-between">
@@ -209,7 +286,10 @@ const handleStatusUpdate = async (order: Order) => {
             </div>
 
             <div className="mt-5 flex gap-3">
-              <button className="rounded-xl bg-blue-500 px-5 py-2 text-white hover:bg-blue-600">
+              <button
+                onClick={() => handleViewOrder(order._id)}
+                className="rounded-xl bg-blue-500 px-5 py-2 text-white hover:bg-blue-600"
+              >
                 View
               </button>
 

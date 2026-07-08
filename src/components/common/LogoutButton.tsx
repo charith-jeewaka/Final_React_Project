@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../service/Auth";
+import { LogOut } from "lucide-react";
 
 const LogoutButton: React.FC = () => {
   const navigate = useNavigate();
@@ -16,15 +17,17 @@ const LogoutButton: React.FC = () => {
       style={{
         cursor: "pointer",
       }}
-      className="bg-red-600
-        hover:bg-red-700
-        text-white
-        px-4 py-2
-        rounded-md
-        transition"
+      className="flex w-60 items-center justify-center gap-2
+    bg-red-600
+    hover:bg-red-700
+    text-white
+    px-4 py-2
+    rounded-xl
+    transition"
     >
-      {" "}
-      Log Out
+      <LogOut size={20} />
+
+      <span>Log Out</span>
     </button>
   );
 };

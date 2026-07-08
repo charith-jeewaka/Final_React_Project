@@ -115,7 +115,8 @@ const Inventory = () => {
   return (
     <div className="space-y-6">
       {/* Search & Filters */}
-      <div className="rounded-2xl bg-white p-5 shadow">
+      <div className="sticky top-0 z-10 rounded-2xl bg-white p-3 shadow">
+        {" "}
         <div className="grid gap-4 md:grid-cols-3">
           <input
             value={search}
