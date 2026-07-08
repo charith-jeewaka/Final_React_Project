@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getAllOrders } from "../../service/OrderService";
 import type { Order } from "../../types/Order";
+import Swal from "sweetalert2";
+import { updateOrderStatus } from "../../service/OrderService";
 
 const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -32,6 +34,67 @@ const Orders = () => {
     }
   };
 
+const handleStatusUpdate = async (order: Order) => {
+  let inputOptions: Record<string, string> = {};
+
+  switch (order.status) {
+    case "Pending":
+      inputOptions = {
+        Processing: "Processing",
+        Cancelled: "Cancelled",
+      };
+      break;
+
+    case "Processing":
+      inputOptions = {
+        Delivered: "Delivered",
+      };
+      break;
+
+    case "Delivered":
+    case "Cancelled":
+      await Swal.fire({
+        icon: "info",
+        title: "Status Locked",
+        text: `This order has already been ${order.status.toLowerCase()} and cannot be changed.`,
+      });
+      return;
+
+    default:
+      return;
+  }
+
+  const { value: status } = await Swal.fire({
+    title: "Update Order Status",
+    input: "select",
+    inputOptions,
+    inputPlaceholder: "Select new status",
+    showCancelButton: true,
+  });
+
+  if (!status) return;
+
+  try {
+    const response = await updateOrderStatus(order._id, status);
+
+    await Swal.fire({
+      icon: "success",
+      title: "Updated",
+      text: response.message,
+      timer: 1500,
+      showConfirmButton: false,
+    });
+
+    loadOrders();
+  } catch (error: any) {
+    Swal.fire({
+      icon: "error",
+      title: "Failed",
+      text: error.response?.data?.message || "Something went wrong.",
+    });
+  }
+};
+
   const filterOrders = () => {
     let result = [...orders];
 
@@ -53,6 +116,26 @@ const Orders = () => {
   if (loading) {
     return <h1>Loading Orders...</h1>;
   }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Pending":
+        return "bg-yellow-100 text-yellow-700";
+
+      case "Processing":
+        return "bg-blue-100 text-blue-700";
+
+      case "Delivered":
+        return "bg-green-100 text-green-700";
+
+      case "Cancelled":
+        return "bg-red-100 text-red-700";
+
+      default:
+        return "bg-zinc-100 text-zinc-700";
+    }
+  };
+  
 
   return (
     <div className="space-y-6">
@@ -99,7 +182,9 @@ const Orders = () => {
                 </p>
               </div>
 
-              <span className="rounded-full bg-yellow-100 px-4 py-2 font-semibold text-yellow-700">
+              <span
+                className={`rounded-full px-4 py-2 font-semibold ${getStatusColor(order.status)}`}
+              >
                 {order.status}
               </span>
             </div>
@@ -128,7 +213,10 @@ const Orders = () => {
                 View
               </button>
 
-              <button className="rounded-xl bg-emerald-500 px-5 py-2 text-white hover:bg-emerald-600">
+              <button
+                onClick={() => handleStatusUpdate(order)}
+                className="rounded-xl bg-emerald-500 px-5 py-2 text-white hover:bg-emerald-600"
+              >
                 Update Status
               </button>
             </div>
