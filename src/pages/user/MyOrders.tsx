@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { getMyOrders } from "../../service/OrderService";
 import type { Order } from "../../types/Order";
+import { useNavigate } from "react-router-dom";
 
 const MyOrders = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
@@ -48,7 +50,10 @@ const MyOrders = () => {
             </p>
           </div>
 
-          <button className="mt-4 rounded-xl bg-emerald-500 px-5 py-2 text-white">
+          <button
+            onClick={() => navigate(`/dashboard/myOrders/${order._id}`)}
+            className="mt-4 rounded-xl bg-emerald-500 px-5 py-2 text-white hover:bg-emerald-600"
+          >
             View Details
           </button>
         </div>

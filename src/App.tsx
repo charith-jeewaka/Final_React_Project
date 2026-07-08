@@ -23,6 +23,7 @@ import { isLoggedIn } from "./service/TokenService";
 import EditProduct from "./pages/admin/EditProduct";
 import UserCart from "./pages/user/UserCart";
 import Checkout from "./pages/user/Checkout";
+import OrderDetails from "./pages/user/OrderDetails";
 
 export default function App() {
   return (
@@ -84,6 +85,7 @@ export default function App() {
 
           {/* Future pages */}
           {<Route path="orders" element={<Orders />} />}
+          <Route path="myOrders/:id" element={<OrderDetails />} />
           {<Route path="inventory" element={<Inventory />} />}
           <Route path="inventory/edit/:id" element={<EditProduct />} />
           {<Route path="reports" element={<Reports />} />}

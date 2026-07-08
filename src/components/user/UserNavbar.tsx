@@ -7,7 +7,7 @@ const UserNavbar = () => {
   const menuItems = [
     { name: "Home", path: "/dashboard" },
     { name: "Cart", path: "/dashboard/userCart" },
-    { name: "My Orders", path: "/dashboard/orders" },
+    { name: "My Orders", path: "/dashboard/myOrders" },
     // { name: "Wishlist", path: "/dashboard/wishlist" },
     { name: "Profile", path: "/dashboard/profile" },
   ];
